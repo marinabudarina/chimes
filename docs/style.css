@@ -1030,6 +1030,64 @@ body {
     height: var(--area-h);
     transform: translateX(-50%);
   }
+
+  /* Destinations: roofs must scale with the same --area-w as home (not desktop px) */
+  .carousel__item[data-country="china"] {
+    --roof-x: calc(-180 / 492 * var(--area-w));
+    --roof-y: calc(-508 / 492 * var(--area-w));
+    --roof-w: calc(841 / 492 * var(--area-w));
+    --roof-h: calc(841 / 492 * var(--area-w));
+  }
+
+  .carousel__item[data-country="japan"] {
+    --roof-x: calc(-71 / 492 * var(--area-w));
+    --roof-y: calc(-367 / 492 * var(--area-w));
+    --roof-w: calc(634 / 492 * var(--area-w));
+    --roof-h: calc(634 / 492 * var(--area-w));
+  }
+
+  .carousel__item[data-country="vietnam"] {
+    --roof-x: calc(-92 / 492 * var(--area-w));
+    --roof-y: calc(-399 / 492 * var(--area-w));
+    --roof-w: calc(676 / 492 * var(--area-w));
+    --roof-h: calc(676 / 492 * var(--area-w));
+  }
+
+  .carousel__item[data-country="kazakhstan"] {
+    --roof-x: calc(-14 / 492 * var(--area-w));
+    --roof-y: calc(-206 / 492 * var(--area-w));
+    --roof-w: calc(519 / 492 * var(--area-w));
+    --roof-h: calc(271 / 492 * var(--area-w));
+  }
+
+  .carousel__item[data-country="russia"] {
+    --roof-x: calc(-36 / 492 * var(--area-w));
+    --roof-y: calc(-247 / 492 * var(--area-w));
+    --roof-w: calc(564 / 492 * var(--area-w));
+    --roof-h: calc(284 / 492 * var(--area-w));
+  }
+
+  .carousel__item .shadow {
+    --shadow-w: calc(996 / 492 * var(--area-w));
+    --shadow-h: var(--area-h);
+    width: var(--shadow-w);
+    height: var(--shadow-h);
+  }
+
+  .carousel__item .strings {
+    --pad: var(--strings-pad);
+    left: calc(var(--pad) * -1);
+    top: calc(var(--pad) * -1);
+    width: calc(100% + var(--pad) * 2);
+    height: calc(100% + var(--pad) * 2);
+  }
+
+  /* Destinations view: center the carousel (home copy is hidden) */
+  .stage[data-view="destinations"] .carousel__viewport {
+    top: 48%;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+  }
 }
 
 @media (max-width: 960px) and (max-height: 640px) {

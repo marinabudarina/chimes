@@ -839,6 +839,7 @@ function initViews() {
       carousel?.syncToCountry(currentCountryId);
       carousel?.layout();
     }
+    layoutAreaAboveCopy();
     const hash = next === "home" ? "#home" : `#${next}`;
     if (location.hash !== hash) {
       history.replaceState(null, "", hash);
@@ -861,7 +862,7 @@ function initViews() {
   window.setView = setView;
 }
 
-/** Mobile: pin area / carousel viewport a fixed gap above the eyebrow. */
+/** Mobile: pin home area a fixed gap above the eyebrow. */
 const AREA_COPY_GAP_PX = 64;
 
 function layoutAreaAboveCopy() {
@@ -882,13 +883,21 @@ function layoutAreaAboveCopy() {
     return;
   }
 
+  // Destinations: let CSS center the carousel; clear any home pin
+  if (stage.dataset.view === "destinations") {
+    if (carouselVp) {
+      carouselVp.style.bottom = "";
+      carouselVp.style.top = "";
+    }
+  }
+
   const stageRect = stage.getBoundingClientRect();
   const eyebrowTop = eyebrow.getBoundingClientRect().top - stageRect.top;
   // CSS `bottom` = distance from stage bottom to the area’s bottom edge
   const bottom = Math.max(0, stageRect.height - eyebrowTop + AREA_COPY_GAP_PX);
   area.style.top = "auto";
   area.style.bottom = `${bottom}px`;
-  if (carouselVp) {
+  if (carouselVp && stage.dataset.view !== "destinations") {
     carouselVp.style.top = "auto";
     carouselVp.style.bottom = `${bottom}px`;
   }
@@ -907,10 +916,25 @@ function bindAreaCopyLayout() {
 }
 
 /* ─── Destinations carousel (Figma 605:6580) ─── */
-// Center gap ≈ 575px; side scale ≈ 290/492 ≈ 0.59
-const CAROUSEL_GAP = 575;
+// Desktop center gap ≈ 575px at area 492; side scale ≈ 290/492 ≈ 0.59
+const CAROUSEL_GAP_DESKTOP = 575;
+const CAROUSEL_AREA_DESKTOP = 492;
 const CAROUSEL_SIDE_SCALE = 0.58;
 const CAROUSEL_SNAP_MS = 520;
+
+function carouselGapPx() {
+  const sample =
+    document.querySelector(".carousel__item") ||
+    document.getElementById("area");
+  const w = sample?.getBoundingClientRect?.().width;
+  if (!w || !Number.isFinite(w) || w < 8) return CAROUSEL_GAP_DESKTOP;
+  let gap = (CAROUSEL_GAP_DESKTOP / CAROUSEL_AREA_DESKTOP) * w;
+  // Roofs overflow the area box; on narrow screens space neighbors farther out
+  if (window.matchMedia("(max-width: 960px)").matches) {
+    gap *= 1.55;
+  }
+  return gap;
+}
 
 let carousel = null;
 
@@ -1203,7 +1227,7 @@ function initCarousel() {
   function layout() {
     items.forEach((el, i) => {
       const d = wrapDelta(i - index);
-      const x = d * CAROUSEL_GAP;
+      const x = d * carouselGapPx();
       const absD = Math.abs(d);
       const s = scaleFor(absD);
       el.style.transform = `translate3d(${x}px, 0, 0) scale(${s})`;
@@ -1311,7 +1335,7 @@ function initCarousel() {
         velocity = velocity * 0.7 + vx * 0.3;
         lastX = e.clientX;
         lastT = now;
-        index = startIndex - dx / CAROUSEL_GAP;
+        index = startIndex - dx / carouselGapPx();
         layout();
         return;
       }
@@ -1364,7 +1388,7 @@ function initCarousel() {
       const delta =
         Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       cancelAnimationFrame(animRaf);
-      index += delta / CAROUSEL_GAP;
+      index += delta / carouselGapPx();
       layout();
       clearTimeout(root._wheelSnap);
       root._wheelSnap = setTimeout(() => {
