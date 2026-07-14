@@ -1,29 +1,26 @@
-The MIT License (MIT)
-
 Copyright (c) 2026 Marina Budarina (https://budarina.design)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+All rights reserved.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+This project — including its design, user interface, copy, country presentation,
+chimes, destinations experience, assets, and other original work by Marina
+Budarina — may not be copied, modified, distributed, or used to create
+derivative works without prior written permission from the copyright holder,
+except as permitted below for third-party portions.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Viewing the public repository does not grant a license to reuse this work.
+
+Contact: https://budarina.design
 
 ---
 
-Cloth / string physics simulation portions are derived from work by Liam Egan
-(CodePen: https://codepen.io/shubniggurath/pen/ZYpjorm), also under the MIT License:
+EXCEPTION — cloth / string physics foundation
+
+Portions of the cloth / string physics simulation are derived from work by
+Liam Egan (CodePen: https://codepen.io/shubniggurath/pen/ZYpjorm) and remain
+available under the MIT License:
+
+The MIT License (MIT)
 
 Copyright (c) 2026 Liam Egan (https://codepen.io/shubniggurath/pen/ZYpjorm)
 
