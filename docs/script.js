@@ -926,14 +926,11 @@ function carouselGapPx() {
   const sample =
     document.querySelector(".carousel__item") ||
     document.getElementById("area");
-  const w = sample?.getBoundingClientRect?.().width;
+  // Prefer offsetWidth — getBoundingClientRect shrinks with transform:scale on
+  // side items, which made spacing collapse whenever Vietnam wasn't centered.
+  const w = sample?.offsetWidth || sample?.getBoundingClientRect?.().width;
   if (!w || !Number.isFinite(w) || w < 8) return CAROUSEL_GAP_DESKTOP;
-  let gap = (CAROUSEL_GAP_DESKTOP / CAROUSEL_AREA_DESKTOP) * w;
-  // Roofs overflow the area box; on narrow screens space neighbors farther out
-  if (window.matchMedia("(max-width: 960px)").matches) {
-    gap *= 1.55;
-  }
-  return gap;
+  return (CAROUSEL_GAP_DESKTOP / CAROUSEL_AREA_DESKTOP) * w;
 }
 
 let carousel = null;
@@ -1337,7 +1334,7 @@ function initCarousel() {
         velocity = Math.max(-2.2, Math.min(2.2, velocity));
         lastX = e.clientX;
         lastT = now;
-        index = startIndex - dx / carouselGapPx();
+        index = startIndex + dx / carouselGapPx();
         layout();
         return;
       }
@@ -1376,10 +1373,10 @@ function initCarousel() {
     }
 
     const gap = carouselGapPx();
-    // Convert fling from px/ms → index units (was wrongly applied as raw index before)
+    // velocity is px/ms; convert to index. Drag-right increases index, so fling matches +.
     const flickIndex = Math.max(
       -0.55,
-      Math.min(0.55, (-velocity * 140) / gap)
+      Math.min(0.55, (velocity * 140) / gap)
     );
     const releaseNearest = Math.round(index);
     let target = Math.round(index + flickIndex);
