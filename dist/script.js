@@ -1334,7 +1334,7 @@ function initCarousel() {
         velocity = Math.max(-2.2, Math.min(2.2, velocity));
         lastX = e.clientX;
         lastT = now;
-        index = startIndex + dx / carouselGapPx();
+        index = startIndex - dx / carouselGapPx();
         layout();
         return;
       }
@@ -1373,10 +1373,10 @@ function initCarousel() {
     }
 
     const gap = carouselGapPx();
-    // velocity is px/ms; convert to index. Drag-right increases index, so fling matches +.
+    // Drag-left increases index (content follows finger); fling matches -.
     const flickIndex = Math.max(
       -0.55,
-      Math.min(0.55, (velocity * 140) / gap)
+      Math.min(0.55, (-velocity * 140) / gap)
     );
     const releaseNearest = Math.round(index);
     let target = Math.round(index + flickIndex);
