@@ -97,10 +97,48 @@
           </h1>
         </section>
 
-        <p class="aside" id="pageAside">
-          Wander forbidden gardens, painted eaves, and stories older than the
-          maps that tried to hold them.
-        </p>
+        <div class="aside-block">
+          <p class="aside" id="pageAside">
+            Wander forbidden gardens, painted eaves, and stories older than the
+            maps that tried to hold them.
+          </p>
+          <button type="button" class="about-btn" id="aboutBtn" aria-expanded="false" aria-controls="aboutModal">About</button>
+        </div>
+      </div>
+
+      <div
+        class="about"
+        id="aboutModal"
+        hidden
+        aria-hidden="true"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="aboutTitle"
+      >
+        <button type="button" class="about__backdrop" id="aboutCloseBg" aria-label="Close about"></button>
+        <div class="about__panel">
+          <button type="button" class="about__close" id="aboutClose" aria-label="Close">
+            Close
+          </button>
+          <div class="about__photo">
+            <img src="./marina.jpg" alt="Marina Budarina" width="768" height="1024" />
+          </div>
+          <div class="about__copy">
+            <h2 class="about__title" id="aboutTitle">I’m Marina Budarina</h2>
+            <div class="about__body">
+              <p>I’m trying to make the internet fun again. This was inspired by the beaded doorway curtains we always had at home.</p>
+              <p>I’m from Kazakhstan, and living as a nomad, every country feels like another door.</p>
+              <p>So I gave each one its own curtain — woven from its architecture, its wisdom, its language, its sound.</p>
+              <p>A small interactive way to experience a culture beyond just photos.</p>
+            </div>
+            <div class="about__links">
+              <a href="https://budarina.design/" target="_blank" rel="noopener noreferrer">budarina.design</a>
+              <a href="https://www.instagram.com/marina_uiux/" target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href="https://x.com/marina_uiux" target="_blank" rel="noopener noreferrer">X</a>
+              <a href="https://www.linkedin.com/in/marina-budarina/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            </div>
+          </div>
+        </div>
       </div>
 
       <section

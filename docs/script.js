@@ -404,9 +404,57 @@ document.getElementById("chatBtn")?.addEventListener("click", () => {
   setPaneOpen(pane.hidden);
 });
 
+const aboutModal = document.getElementById("aboutModal");
+const aboutBtn = document.getElementById("aboutBtn");
+let aboutLastFocus = null;
+
+function isAboutOpen() {
+  return !!(aboutModal && !aboutModal.hidden);
+}
+
+function setAboutOpen(open) {
+  if (!aboutModal) return;
+  if (open) {
+    aboutLastFocus = document.activeElement;
+    aboutModal.hidden = false;
+    aboutModal.setAttribute("aria-hidden", "false");
+    aboutBtn?.setAttribute("aria-expanded", "true");
+    const closeBtn = document.getElementById("aboutClose");
+    (closeBtn || aboutModal).focus?.();
+  } else {
+    aboutModal.hidden = true;
+    aboutModal.setAttribute("aria-hidden", "true");
+    aboutBtn?.setAttribute("aria-expanded", "false");
+    const restore = aboutLastFocus;
+    aboutLastFocus = null;
+    if (restore && typeof restore.focus === "function") {
+      restore.focus();
+    } else {
+      aboutBtn?.focus?.();
+    }
+  }
+}
+
+aboutBtn?.addEventListener("click", () => {
+  setAboutOpen(true);
+});
+document.getElementById("aboutClose")?.addEventListener("click", () => {
+  setAboutOpen(false);
+});
+document.getElementById("aboutCloseBg")?.addEventListener("click", () => {
+  setAboutOpen(false);
+});
+
 window.addEventListener("keydown", (e) => {
   if (e.key === "`") setPaneOpen(pane.hidden);
-  if (e.key === "Escape") setPaneOpen(false);
+  if (e.key === "Escape") {
+    if (isAboutOpen()) {
+      e.preventDefault();
+      setAboutOpen(false);
+      return;
+    }
+    setPaneOpen(false);
+  }
 });
 
 function isPaneEvent(e) {
@@ -414,7 +462,10 @@ function isPaneEvent(e) {
     e.target?.closest?.(".tp-dfwv") ||
     e.target?.closest?.(".chat-btn") ||
     e.target?.closest?.(".topbar") ||
-    e.target?.closest?.(".country-btn")
+    e.target?.closest?.(".country-btn") ||
+    e.target?.closest?.(".about") ||
+    e.target?.closest?.(".about-btn") ||
+    e.target?.closest?.(".aside-block")
   );
 }
 
@@ -871,6 +922,7 @@ function initViews() {
       a.classList.toggle("is-active", a.dataset.view === next);
     });
     if (next === "destinations") {
+      if (isAboutOpen()) setAboutOpen(false);
       carousel?.syncToCountry(currentCountryId);
       carousel?.layout();
     }

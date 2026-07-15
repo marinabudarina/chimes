@@ -108,17 +108,47 @@ body {
 }
 
 .menu a {
+  font-family: var(--mono);
   font-size: 14px;
   font-weight: 400;
   letter-spacing: -0.06em;
   line-height: 21px;
-  color: var(--ink-muted);
-  text-decoration: none;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition:
+    color 160ms ease,
+    text-decoration-color 160ms ease,
+    text-decoration-thickness 160ms ease;
+}
+
+.menu a:hover {
+  color: var(--ink-strong);
+  text-decoration-color: var(--ink-strong);
+  text-decoration-thickness: 2px;
+}
+
+.menu a:focus-visible {
+  color: var(--ink-strong);
+  text-decoration-color: var(--ink-strong);
+  text-decoration-thickness: 2px;
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
 }
 
 .menu a.is-active {
   font-weight: 500;
   color: var(--ink);
+}
+
+/* Active stays weight-marked; hover only deepens ink — no underline */
+.menu a.is-active:hover,
+.menu a.is-active:focus-visible {
+  color: var(--ink-strong);
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
 }
 
 .dot {
@@ -522,11 +552,11 @@ body {
   margin: 0;
   max-width: 100%;
   font-family: var(--mono);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
-  letter-spacing: -0.14em;
+  letter-spacing: -0.06em;
   line-height: 21px;
-  color: var(--ink-soft);
+  color: var(--ink);
   white-space: normal;
 }
 
@@ -547,19 +577,234 @@ body {
 
 .aside {
   /* Figma 605:6466 — x:1255 y:747 w:232 h:63 */
-  width: 232px;
-  max-width: min(232px, 32vw);
+  width: 100%;
+  max-width: none;
   margin: 0;
-  margin-left: auto;
+  margin-left: 0;
+  font-family: var(--mono);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.06em;
   line-height: 21px;
   color: var(--ink);
   flex-shrink: 0;
-  align-self: flex-end;
-  /* aside bottom sits ~10px above heading bottom on the artboard */
+  align-self: stretch;
+  margin-bottom: 0;
+}
+
+.aside-block {
+  width: 232px;
+  max-width: min(232px, 32vw);
+  margin-left: auto;
   margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  flex-shrink: 0;
+  align-self: flex-end;
+  pointer-events: auto;
+}
+
+.about-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.06em;
+  line-height: 21px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition:
+    color 160ms ease,
+    text-decoration-thickness 160ms ease;
+}
+
+.about-btn:hover {
+  color: var(--ink-strong);
+  text-decoration-thickness: 2px;
+}
+
+.about-btn:focus-visible {
+  color: var(--ink-strong);
+  text-decoration-thickness: 2px;
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+
+/* ─── About modal ─── */
+.about[hidden] {
+  display: none !important;
+}
+
+.about {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  pointer-events: auto;
+}
+
+.about__backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  background: rgba(58, 45, 42, 0.28);
+  backdrop-filter: blur(2px);
+}
+
+.about__panel {
+  position: relative;
+  z-index: 1;
+  width: min(860px, 100%);
+  max-height: min(860px, calc(100vh - 48px));
+  overflow: auto;
+  display: grid;
+  grid-template-columns: minmax(180px, 0.9fr) 1.15fr;
+  gap: 28px;
+  padding: 28px;
+  background:
+    linear-gradient(160deg, rgba(255, 250, 240, 0.55), transparent 42%),
+    rgba(244, 234, 216, 0.97);
+  color: var(--ink-strong);
+  box-shadow: 0 24px 60px rgba(58, 45, 42, 0.22);
+}
+
+.about__close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  z-index: 2;
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 4px 0;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: -0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.about__close:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.about__photo {
+  overflow: hidden;
+  aspect-ratio: 3 / 4;
+  background: rgba(88, 66, 60, 0.08);
+}
+
+.about__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+.about__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 8px;
+  padding-right: 36px;
+  min-width: 0;
+}
+
+.about__title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  color: var(--ink-strong);
+}
+
+.about__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.about__body p {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.06em;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.about__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: 4px;
+}
+
+.about__links a {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: -0.08em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.about__links a:hover {
+  color: var(--ink-strong);
+}
+
+@media (max-width: 720px) {
+  .about {
+    padding: 16px;
+    align-items: end;
+  }
+
+  .about__panel {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 20px;
+    width: 100%;
+    max-height: calc(100vh - 32px);
+    max-height: calc(100dvh - 32px);
+  }
+
+  .about__photo {
+    max-width: 180px;
+  }
+
+  .about__copy {
+    padding-right: 0;
+    padding-top: 0;
+  }
+
+  .about__title {
+    font-size: clamp(24px, 7vw, 32px);
+    padding-right: 52px;
+  }
 }
 
 .heading h1 .word {
@@ -923,6 +1168,11 @@ body {
     line-height: 18px;
   }
 
+  .about-btn {
+    font-size: 12px;
+    line-height: 18px;
+  }
+
   .dot {
     width: 2px;
     height: 2px;
@@ -1076,9 +1326,8 @@ body {
   }
 
   .eyebrow {
-    font-size: 13px;
+    font-size: 12px;
     line-height: 18px;
-    letter-spacing: -0.1em;
   }
 
   .heading h1 {
@@ -1087,6 +1336,14 @@ body {
 
   .aside {
     display: none;
+  }
+
+  .aside-block {
+    width: auto;
+    max-width: none;
+    margin-left: 0;
+    margin-bottom: 0;
+    align-self: flex-start;
   }
 
   .carousel__viewport {
