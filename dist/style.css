@@ -315,6 +315,54 @@ body {
   height: 33px;
 }
 
+/* France — Figma 633:311: 56×30 */
+.country-btn[data-country="france"] .country-btn__icon {
+  width: 56px;
+  height: 30px;
+}
+
+/* India — Figma 633:277: 70×44 */
+.country-btn[data-country="india"] .country-btn__icon {
+  width: 70px;
+  height: 44px;
+}
+
+/* UK — Figma 633:299: 62×43 */
+.country-btn[data-country="uk"] .country-btn__icon {
+  width: 62px;
+  height: 43px;
+}
+
+/* Norway — Figma 633:321: 62×28 */
+.country-btn[data-country="norway"] .country-btn__icon {
+  width: 62px;
+  height: 28px;
+}
+
+/* Italy — Figma 633:331: 54×50 */
+.country-btn[data-country="italy"] .country-btn__icon {
+  width: 54px;
+  height: 50px;
+}
+
+/* USA — Figma 634:388: 64×36 */
+.country-btn[data-country="usa"] .country-btn__icon {
+  width: 64px;
+  height: 36px;
+}
+
+/* Brazil — Figma 634:401: 64×28 */
+.country-btn[data-country="brazil"] .country-btn__icon {
+  width: 64px;
+  height: 28px;
+}
+
+/* Iran — Figma 634:410: 64×26 */
+.country-btn[data-country="iran"] .country-btn__icon {
+  width: 64px;
+  height: 26px;
+}
+
 .country-btn__label {
   font-family: var(--display);
   font-weight: 500;
@@ -373,6 +421,70 @@ body {
   --roof-y: -247px;
   --roof-w: 564px;
   --roof-h: 284px;
+}
+
+/* Figma 633:304 — France mansard */
+.area[data-country="france"] {
+  --roof-x: -38px;
+  --roof-y: -267px;
+  --roof-w: 569px;
+  --roof-h: 271px;
+}
+
+/* Figma 633:254 — India dome */
+.area[data-country="india"] {
+  --roof-x: -95px;
+  --roof-y: -343px;
+  --roof-w: 681px;
+  --roof-h: 466px;
+}
+
+/* Figma 633:259 — UK thatch */
+.area[data-country="uk"] {
+  --roof-x: -81px;
+  --roof-y: -296px;
+  --roof-w: 625px;
+  --roof-h: 411px;
+}
+
+/* Figma 633:315 — Norway sod roof */
+.area[data-country="norway"] {
+  --roof-x: -82px;
+  --roof-y: -226px;
+  --roof-w: 655px;
+  --roof-h: 248px;
+}
+
+/* Figma 633:325 — Italy duomo */
+.area[data-country="italy"] {
+  --roof-x: -32px;
+  --roof-y: -418px;
+  --roof-w: 547px;
+  --roof-h: 500px;
+}
+
+/* Figma 634:382 — USA shingle gable */
+.area[data-country="usa"] {
+  --roof-x: -77px;
+  --roof-y: -276px;
+  --roof-w: 629px;
+  --roof-h: 285px;
+}
+
+/* Figma 634:392 — Brazil terracotta */
+.area[data-country="brazil"] {
+  --roof-x: -77px;
+  --roof-y: -236px;
+  --roof-w: 629px;
+  --roof-h: 259px;
+}
+
+/* Figma 634:395 — Iran windcatchers */
+.area[data-country="iran"] {
+  --roof-x: -77px;
+  --roof-y: -220px;
+  --roof-w: 629px;
+  --roof-h: 228px;
 }
 
 .scene {
@@ -515,7 +627,15 @@ body {
 }
 
 .area[data-country="kazakhstan"] .roof img,
-.area[data-country="russia"] .roof img {
+.area[data-country="russia"] .roof img,
+.area[data-country="france"] .roof img,
+.area[data-country="india"] .roof img,
+.area[data-country="uk"] .roof img,
+.area[data-country="norway"] .roof img,
+.area[data-country="italy"] .roof img,
+.area[data-country="usa"] .roof img,
+.area[data-country="brazil"] .roof img,
+.area[data-country="iran"] .roof img {
   object-fit: contain;
   object-position: center bottom;
 }
@@ -1009,6 +1129,62 @@ body {
   --roof-h: 284px;
 }
 
+.carousel__item[data-country="france"] {
+  --roof-x: -38px;
+  --roof-y: -267px;
+  --roof-w: 569px;
+  --roof-h: 271px;
+}
+
+.carousel__item[data-country="india"] {
+  --roof-x: -95px;
+  --roof-y: -343px;
+  --roof-w: 681px;
+  --roof-h: 466px;
+}
+
+.carousel__item[data-country="uk"] {
+  --roof-x: -81px;
+  --roof-y: -296px;
+  --roof-w: 625px;
+  --roof-h: 411px;
+}
+
+.carousel__item[data-country="norway"] {
+  --roof-x: -82px;
+  --roof-y: -226px;
+  --roof-w: 655px;
+  --roof-h: 248px;
+}
+
+.carousel__item[data-country="italy"] {
+  --roof-x: -32px;
+  --roof-y: -418px;
+  --roof-w: 547px;
+  --roof-h: 500px;
+}
+
+.carousel__item[data-country="usa"] {
+  --roof-x: -77px;
+  --roof-y: -276px;
+  --roof-w: 629px;
+  --roof-h: 285px;
+}
+
+.carousel__item[data-country="brazil"] {
+  --roof-x: -77px;
+  --roof-y: -236px;
+  --roof-w: 629px;
+  --roof-h: 259px;
+}
+
+.carousel__item[data-country="iran"] {
+  --roof-x: -77px;
+  --roof-y: -220px;
+  --roof-w: 629px;
+  --roof-h: 228px;
+}
+
 .carousel__item .shadow {
   position: absolute;
   left: 0;
@@ -1051,7 +1227,15 @@ body {
 }
 
 .carousel__item[data-country="kazakhstan"] .roof img,
-.carousel__item[data-country="russia"] .roof img {
+.carousel__item[data-country="russia"] .roof img,
+.carousel__item[data-country="france"] .roof img,
+.carousel__item[data-country="india"] .roof img,
+.carousel__item[data-country="uk"] .roof img,
+.carousel__item[data-country="norway"] .roof img,
+.carousel__item[data-country="italy"] .roof img,
+.carousel__item[data-country="usa"] .roof img,
+.carousel__item[data-country="brazil"] .roof img,
+.carousel__item[data-country="iran"] .roof img {
   object-fit: contain;
   object-position: center bottom;
 }
@@ -1238,6 +1422,46 @@ body {
     height: 28px;
   }
 
+  .country-btn[data-country="france"] .country-btn__icon {
+    width: 48px;
+    height: 26px;
+  }
+
+  .country-btn[data-country="india"] .country-btn__icon {
+    width: 58px;
+    height: 36px;
+  }
+
+  .country-btn[data-country="uk"] .country-btn__icon {
+    width: 52px;
+    height: 36px;
+  }
+
+  .country-btn[data-country="norway"] .country-btn__icon {
+    width: 52px;
+    height: 24px;
+  }
+
+  .country-btn[data-country="italy"] .country-btn__icon {
+    width: 46px;
+    height: 42px;
+  }
+
+  .country-btn[data-country="usa"] .country-btn__icon {
+    width: 54px;
+    height: 30px;
+  }
+
+  .country-btn[data-country="brazil"] .country-btn__icon {
+    width: 54px;
+    height: 24px;
+  }
+
+  .country-btn[data-country="iran"] .country-btn__icon {
+    width: 54px;
+    height: 22px;
+  }
+
   .country-btn__label {
     font-size: 14px;
   }
@@ -1290,6 +1514,62 @@ body {
     --roof-y: calc(-247 / 492 * var(--area-w));
     --roof-w: calc(564 / 492 * var(--area-w));
     --roof-h: calc(284 / 492 * var(--area-w));
+  }
+
+  .area[data-country="france"] {
+    --roof-x: calc(-38 / 492 * var(--area-w));
+    --roof-y: calc(-267 / 492 * var(--area-w));
+    --roof-w: calc(569 / 492 * var(--area-w));
+    --roof-h: calc(271 / 492 * var(--area-w));
+  }
+
+  .area[data-country="india"] {
+    --roof-x: calc(-95 / 492 * var(--area-w));
+    --roof-y: calc(-343 / 492 * var(--area-w));
+    --roof-w: calc(681 / 492 * var(--area-w));
+    --roof-h: calc(466 / 492 * var(--area-w));
+  }
+
+  .area[data-country="uk"] {
+    --roof-x: calc(-81 / 492 * var(--area-w));
+    --roof-y: calc(-296 / 492 * var(--area-w));
+    --roof-w: calc(625 / 492 * var(--area-w));
+    --roof-h: calc(411 / 492 * var(--area-w));
+  }
+
+  .area[data-country="norway"] {
+    --roof-x: calc(-82 / 492 * var(--area-w));
+    --roof-y: calc(-226 / 492 * var(--area-w));
+    --roof-w: calc(655 / 492 * var(--area-w));
+    --roof-h: calc(248 / 492 * var(--area-w));
+  }
+
+  .area[data-country="italy"] {
+    --roof-x: calc(-32 / 492 * var(--area-w));
+    --roof-y: calc(-418 / 492 * var(--area-w));
+    --roof-w: calc(547 / 492 * var(--area-w));
+    --roof-h: calc(500 / 492 * var(--area-w));
+  }
+
+  .area[data-country="usa"] {
+    --roof-x: calc(-77 / 492 * var(--area-w));
+    --roof-y: calc(-276 / 492 * var(--area-w));
+    --roof-w: calc(629 / 492 * var(--area-w));
+    --roof-h: calc(285 / 492 * var(--area-w));
+  }
+
+  .area[data-country="brazil"] {
+    --roof-x: calc(-77 / 492 * var(--area-w));
+    --roof-y: calc(-236 / 492 * var(--area-w));
+    --roof-w: calc(629 / 492 * var(--area-w));
+    --roof-h: calc(259 / 492 * var(--area-w));
+  }
+
+  .area[data-country="iran"] {
+    --roof-x: calc(-77 / 492 * var(--area-w));
+    --roof-y: calc(-220 / 492 * var(--area-w));
+    --roof-w: calc(629 / 492 * var(--area-w));
+    --roof-h: calc(228 / 492 * var(--area-w));
   }
 
   .shadow {
@@ -1388,6 +1668,62 @@ body {
     --roof-y: calc(-247 / 492 * var(--area-w));
     --roof-w: calc(564 / 492 * var(--area-w));
     --roof-h: calc(284 / 492 * var(--area-w));
+  }
+
+  .carousel__item[data-country="france"] {
+    --roof-x: calc(-38 / 492 * var(--area-w));
+    --roof-y: calc(-267 / 492 * var(--area-w));
+    --roof-w: calc(569 / 492 * var(--area-w));
+    --roof-h: calc(271 / 492 * var(--area-w));
+  }
+
+  .carousel__item[data-country="india"] {
+    --roof-x: calc(-95 / 492 * var(--area-w));
+    --roof-y: calc(-343 / 492 * var(--area-w));
+    --roof-w: calc(681 / 492 * var(--area-w));
+    --roof-h: calc(466 / 492 * var(--area-w));
+  }
+
+  .carousel__item[data-country="uk"] {
+    --roof-x: calc(-81 / 492 * var(--area-w));
+    --roof-y: calc(-296 / 492 * var(--area-w));
+    --roof-w: calc(625 / 492 * var(--area-w));
+    --roof-h: calc(411 / 492 * var(--area-w));
+  }
+
+  .carousel__item[data-country="norway"] {
+    --roof-x: calc(-82 / 492 * var(--area-w));
+    --roof-y: calc(-226 / 492 * var(--area-w));
+    --roof-w: calc(655 / 492 * var(--area-w));
+    --roof-h: calc(248 / 492 * var(--area-w));
+  }
+
+  .carousel__item[data-country="italy"] {
+    --roof-x: calc(-32 / 492 * var(--area-w));
+    --roof-y: calc(-418 / 492 * var(--area-w));
+    --roof-w: calc(547 / 492 * var(--area-w));
+    --roof-h: calc(500 / 492 * var(--area-w));
+  }
+
+  .carousel__item[data-country="usa"] {
+    --roof-x: calc(-77 / 492 * var(--area-w));
+    --roof-y: calc(-276 / 492 * var(--area-w));
+    --roof-w: calc(629 / 492 * var(--area-w));
+    --roof-h: calc(285 / 492 * var(--area-w));
+  }
+
+  .carousel__item[data-country="brazil"] {
+    --roof-x: calc(-77 / 492 * var(--area-w));
+    --roof-y: calc(-236 / 492 * var(--area-w));
+    --roof-w: calc(629 / 492 * var(--area-w));
+    --roof-h: calc(259 / 492 * var(--area-w));
+  }
+
+  .carousel__item[data-country="iran"] {
+    --roof-x: calc(-77 / 492 * var(--area-w));
+    --roof-y: calc(-220 / 492 * var(--area-w));
+    --roof-w: calc(629 / 492 * var(--area-w));
+    --roof-h: calc(228 / 492 * var(--area-w));
   }
 
   .carousel__item .shadow {

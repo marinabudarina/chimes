@@ -6,6 +6,14 @@
  *  - Vietnam → warm mid bronze, soft temple-bell body
  *  - Kazakhstan → open steppe metal / temir-komuz twang
  *  - Russia → deeper church / kolokol bells
+ *  - France → bright café / carillon sparkle
+ *  - India → warm temple bronze / ghanta body
+ *  - UK → soft handbell / village peal
+ *  - Norway → clear cold glass / icy partials
+ *  - Italy → warm mid bronze / campanile ring
+ *  - USA → bright porch / handbell sparkle
+ *  - Brazil → warm mid bronze / festa ring
+ *  - Iran → deep courtyard / metallic windcatcher hum
  */
 
 /** @typedef {{ freqs: number[], partials: { ratio: number, gain: number }[], duration: number, attack: number, peak: number, droop: number, noiseDur: number, noiseGain: number, noiseQ: number, noiseMul: number, shelfHz: number, shelfGain: number, minIntervalMs: number }} ChimeProfile */
@@ -121,6 +129,182 @@ export const COUNTRY_CHIMES = {
     shelfHz: 900,
     shelfGain: 0.5,
     minIntervalMs: 75
+  },
+  // France — bright café carillon / light sparkle
+  france: {
+    freqs: [392.0, 440.0, 523.25, 587.33, 659.25, 783.99, 880.0, 987.77],
+    partials: [
+      { ratio: 1.0, gain: 0.48 },
+      { ratio: 2.0, gain: 0.26 },
+      { ratio: 3.0, gain: 0.16 },
+      { ratio: 4.5, gain: 0.1 },
+      { ratio: 6.0, gain: 0.05 }
+    ],
+    duration: 1.0,
+    attack: 0.006,
+    peak: 0.17,
+    droop: 0.993,
+    noiseDur: 0.028,
+    noiseGain: 0.1,
+    noiseQ: 6,
+    noiseMul: 2.8,
+    shelfHz: 2200,
+    shelfGain: 4.5,
+    minIntervalMs: 48
+  },
+  // India — warm temple bronze / ghanta body
+  india: {
+    freqs: [220.0, 261.63, 311.13, 349.23, 392.0, 466.16, 523.25, 622.25],
+    partials: [
+      { ratio: 1.0, gain: 0.6 },
+      { ratio: 1.5, gain: 0.18 },
+      { ratio: 2.0, gain: 0.2 },
+      { ratio: 2.85, gain: 0.14 },
+      { ratio: 4.1, gain: 0.06 }
+    ],
+    duration: 1.35,
+    attack: 0.014,
+    peak: 0.2,
+    droop: 0.989,
+    noiseDur: 0.045,
+    noiseGain: 0.07,
+    noiseQ: 3.2,
+    noiseMul: 1.8,
+    shelfHz: 1400,
+    shelfGain: 2,
+    minIntervalMs: 62
+  },
+  // UK — soft handbell / village peal
+  uk: {
+    freqs: [293.66, 329.63, 392.0, 440.0, 493.88, 587.33, 659.25, 783.99],
+    partials: [
+      { ratio: 1.0, gain: 0.55 },
+      { ratio: 2.0, gain: 0.24 },
+      { ratio: 2.5, gain: 0.14 },
+      { ratio: 3.8, gain: 0.1 },
+      { ratio: 5.2, gain: 0.05 }
+    ],
+    duration: 1.2,
+    attack: 0.01,
+    peak: 0.18,
+    droop: 0.991,
+    noiseDur: 0.032,
+    noiseGain: 0.08,
+    noiseQ: 4.5,
+    noiseMul: 2.2,
+    shelfHz: 1700,
+    shelfGain: 3,
+    minIntervalMs: 55
+  },
+  // Norway — clear cold glass / icy partials
+  norway: {
+    freqs: [523.25, 587.33, 659.25, 783.99, 880.0, 987.77, 1174.7, 1318.5],
+    partials: [
+      { ratio: 1.0, gain: 0.42 },
+      { ratio: 2.0, gain: 0.3 },
+      { ratio: 3.2, gain: 0.16 },
+      { ratio: 5.0, gain: 0.1 },
+      { ratio: 7.1, gain: 0.05 }
+    ],
+    duration: 0.9,
+    attack: 0.004,
+    peak: 0.15,
+    droop: 0.995,
+    noiseDur: 0.022,
+    noiseGain: 0.11,
+    noiseQ: 7.5,
+    noiseMul: 3.2,
+    shelfHz: 2600,
+    shelfGain: 5.5,
+    minIntervalMs: 44
+  },
+  // Italy — warm mid bronze / campanile ring
+  italy: {
+    freqs: [246.94, 293.66, 349.23, 392.0, 466.16, 523.25, 587.33, 698.46],
+    partials: [
+      { ratio: 1.0, gain: 0.58 },
+      { ratio: 2.0, gain: 0.24 },
+      { ratio: 2.7, gain: 0.15 },
+      { ratio: 3.9, gain: 0.1 },
+      { ratio: 5.1, gain: 0.05 }
+    ],
+    duration: 1.4,
+    attack: 0.016,
+    peak: 0.2,
+    droop: 0.988,
+    noiseDur: 0.04,
+    noiseGain: 0.065,
+    noiseQ: 3,
+    noiseMul: 1.7,
+    shelfHz: 1300,
+    shelfGain: 1.5,
+    minIntervalMs: 65
+  },
+  // USA — bright porch / handbell sparkle
+  usa: {
+    freqs: [392.0, 440.0, 523.25, 587.33, 659.25, 783.99, 880.0, 987.77],
+    partials: [
+      { ratio: 1.0, gain: 0.5 },
+      { ratio: 2.0, gain: 0.28 },
+      { ratio: 3.0, gain: 0.14 },
+      { ratio: 4.2, gain: 0.08 },
+      { ratio: 6.0, gain: 0.04 }
+    ],
+    duration: 1.05,
+    attack: 0.008,
+    peak: 0.17,
+    droop: 0.992,
+    noiseDur: 0.028,
+    noiseGain: 0.09,
+    noiseQ: 5.5,
+    noiseMul: 2.4,
+    shelfHz: 2200,
+    shelfGain: 4,
+    minIntervalMs: 50
+  },
+  // Brazil — warm mid bronze / festa ring
+  brazil: {
+    freqs: [293.66, 349.23, 392.0, 466.16, 523.25, 587.33, 698.46, 783.99],
+    partials: [
+      { ratio: 1.0, gain: 0.55 },
+      { ratio: 2.0, gain: 0.26 },
+      { ratio: 2.8, gain: 0.14 },
+      { ratio: 3.7, gain: 0.09 },
+      { ratio: 5.0, gain: 0.05 }
+    ],
+    duration: 1.25,
+    attack: 0.012,
+    peak: 0.19,
+    droop: 0.989,
+    noiseDur: 0.036,
+    noiseGain: 0.075,
+    noiseQ: 3.5,
+    noiseMul: 1.9,
+    shelfHz: 1600,
+    shelfGain: 2.5,
+    minIntervalMs: 58
+  },
+  // Iran — deep courtyard / metallic windcatcher hum
+  iran: {
+    freqs: [220.0, 261.63, 311.13, 349.23, 415.3, 466.16, 523.25, 622.25],
+    partials: [
+      { ratio: 1.0, gain: 0.6 },
+      { ratio: 1.5, gain: 0.14 },
+      { ratio: 2.0, gain: 0.22 },
+      { ratio: 2.9, gain: 0.12 },
+      { ratio: 4.5, gain: 0.06 }
+    ],
+    duration: 1.5,
+    attack: 0.02,
+    peak: 0.2,
+    droop: 0.987,
+    noiseDur: 0.045,
+    noiseGain: 0.055,
+    noiseQ: 2.8,
+    noiseMul: 1.5,
+    shelfHz: 1100,
+    shelfGain: 1.2,
+    minIntervalMs: 68
   }
 };
 
