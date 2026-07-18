@@ -28,17 +28,11 @@
             <span class="dot" aria-hidden="true"></span>
             <a href="#destinations" data-view="destinations">Destinations</a>
             <span class="dot" aria-hidden="true"></span>
-            <a
-              href="https://budarina.design/"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-view="knowledge"
-              >Knowledge</a
-            >
+            <a href="#contributions" data-view="contributions">Contributions</a>
           </nav>
         </div>
         <button type="button" class="chat-btn" id="chatBtn" aria-expanded="false">
-          <span class="chat-btn__label">Configure</span>
+          <span class="chat-btn__label">Play</span>
         </button>
       </header>
 
@@ -102,7 +96,14 @@
             Wander forbidden gardens, painted eaves, and stories older than the
             maps that tried to hold them.
           </p>
-          <button type="button" class="about-btn" id="aboutBtn" aria-expanded="false" aria-controls="aboutModal">About</button>
+          <div class="aside-actions">
+            <div class="mobile-tabs" id="mobileTabs">
+              <a href="#home" data-view="home" class="about-btn mobile-tab">Home</a>
+              <a href="#destinations" data-view="destinations" class="about-btn mobile-tab">Destinations</a>
+              <a href="#contributions" data-view="contributions" class="about-btn mobile-tab">Contributions</a>
+            </div>
+            <button type="button" class="about-btn" id="aboutBtn" aria-expanded="false" aria-controls="aboutModal">About</button>
+          </div>
         </div>
       </div>
 
@@ -142,6 +143,46 @@
       </div>
 
       <section
+        class="contributions"
+        id="contributionsView"
+        hidden
+        aria-label="Contributions"
+      >
+        <div class="contributions__inner">
+          <div class="contributions__header">
+            <h2 class="contributions__title" id="contributionsTitle">Contributions</h2>
+            <p class="contributions__prompt">
+              Where are you from? Which country should we add next?
+            </p>
+            <form class="contributions__form" id="contributionsForm">
+              <label class="visually-hidden" for="contributionsInput">Country name</label>
+              <input
+                type="text"
+                class="contributions__input"
+                id="contributionsInput"
+                name="country"
+                maxlength="40"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="Country name"
+                required
+              />
+              <button type="submit" class="contributions__submit" id="contributionsSubmit">
+                Add
+              </button>
+            </form>
+            <p class="contributions__hint" id="contributionsHint" hidden></p>
+          </div>
+          <div class="contributions__stage">
+            <p class="contributions__empty" id="contributionsEmpty">
+              No contributions yet — hang the first country.
+            </p>
+            <div class="contributions__cloth" id="contributionsCloth" aria-hidden="true"></div>
+          </div>
+        </div>
+      </section>
+
+      <section
         class="destinations"
         id="destinationsView"
         hidden
@@ -161,6 +202,6 @@
       </section>
     </div>
 
-    <script type="module" src="./script.js"></script>
+    <script type="module" src="./script.js?v=contributions-8"></script>
   </body>
 </html>

@@ -76,7 +76,7 @@ body {
   right: var(--pad-x);
   width: auto;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   pointer-events: none;
 }
@@ -726,6 +726,22 @@ body {
   pointer-events: auto;
 }
 
+.aside-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 14px 18px;
+}
+
+.mobile-tabs {
+  display: none;
+}
+
+.mobile-tab.is-active {
+  font-weight: 500;
+  color: var(--ink);
+}
+
 .about-btn {
   appearance: none;
   border: none;
@@ -924,6 +940,241 @@ body {
   .about__title {
     font-size: clamp(24px, 7vw, 32px);
     padding-right: 52px;
+  }
+}
+
+/* ─── Contributions modal ─── */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.contributions[hidden] {
+  display: none !important;
+}
+
+.stage[data-view="contributions"] .area,
+.stage[data-view="contributions"] .country-btn,
+.stage[data-view="contributions"] .bottom-copy {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.stage[data-view="home"] .contributions,
+.stage:not([data-view="contributions"]) .contributions {
+  display: none;
+}
+
+.contributions {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.contributions__inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 96px var(--pad-x) 40px;
+  box-sizing: border-box;
+  color: var(--ink-strong);
+}
+
+.contributions__header {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 0 0 auto;
+  max-width: 560px;
+  min-width: 0;
+  pointer-events: auto;
+}
+
+.contributions__title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  color: var(--ink-strong);
+}
+
+.contributions__prompt {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.06em;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.contributions__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 10px;
+  margin-top: 4px;
+  pointer-events: auto;
+}
+
+.contributions__input {
+  flex: 1 1 180px;
+  min-width: 0;
+  appearance: none;
+  border: none;
+  border-bottom: 1px solid rgba(88, 66, 60, 0.35);
+  border-radius: 0;
+  background: transparent;
+  padding: 8px 0;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.06em;
+  line-height: 21px;
+  color: var(--ink-strong);
+  outline: none;
+  cursor: text;
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.contributions__input::placeholder {
+  color: var(--ink-muted);
+}
+
+.contributions__input:focus {
+  border-bottom-color: var(--ink-strong);
+}
+
+.contributions__submit {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 8px 0;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.06em;
+  line-height: 21px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  pointer-events: auto;
+  transition:
+    color 160ms ease,
+    text-decoration-thickness 160ms ease;
+}
+
+.contributions__submit:hover {
+  color: var(--ink-strong);
+  text-decoration-thickness: 2px;
+}
+
+.contributions__submit:focus-visible {
+  color: var(--ink-strong);
+  text-decoration-thickness: 2px;
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.contributions__hint {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: -0.06em;
+  color: var(--ink-muted);
+}
+
+.contributions__hint[hidden] {
+  display: none !important;
+}
+
+.contributions__stage {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 240px;
+  overflow: visible;
+  /* Match parchment / stage — no contrasting panel behind the cloth */
+  background: transparent;
+}
+
+.contributions__empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: -0.06em;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  pointer-events: none;
+}
+
+.contributions__empty[hidden] {
+  display: none !important;
+}
+
+.contributions__cloth {
+  /* Match main .strings: oversized host so sway isn't cropped. */
+  --pad: 56px;
+  position: absolute;
+  left: calc(var(--pad) * -1);
+  top: calc(var(--pad) * -1);
+  width: calc(100% + var(--pad) * 2);
+  height: calc(100% + var(--pad) * 2);
+  overflow: visible;
+  touch-action: none;
+  pointer-events: none;
+}
+
+.contributions__cloth canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: auto;
+}
+
+@media (max-width: 720px) {
+  .contributions__inner {
+    padding: 80px var(--pad-x) 28px;
+    gap: 16px;
+  }
+
+  .contributions__title {
+    font-size: clamp(24px, 7vw, 32px);
+  }
+
+  .contributions__stage {
+    min-height: 200px;
+  }
+
+  .contributions__cloth {
+    --pad: 56px;
   }
 }
 
@@ -1343,8 +1594,7 @@ body {
   }
 
   .menu {
-    display: flex;
-    gap: 10px;
+    display: none !important;
   }
 
   .menu a {
@@ -1362,12 +1612,32 @@ body {
     height: 2px;
   }
 
-  .menu a[data-view="knowledge"] {
+  .mobile-tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+    align-items: baseline;
+    white-space: nowrap;
+  }
+
+  /* Keep bottom nav (tabs + About) on destinations/contributions */
+  .stage[data-view="destinations"] .bottom-copy,
+  .stage[data-view="contributions"] .bottom-copy {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: none;
+  }
+
+  .stage[data-view="destinations"] .heading,
+  .stage[data-view="destinations"] .aside,
+  .stage[data-view="contributions"] .heading,
+  .stage[data-view="contributions"] .aside {
     display: none;
   }
 
-  .menu .dot:has(+ a[data-view="knowledge"]) {
-    display: none;
+  .stage[data-view="destinations"] .aside-actions,
+  .stage[data-view="contributions"] .aside-actions {
+    pointer-events: auto;
   }
 
   .chat-btn {

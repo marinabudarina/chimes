@@ -9,6 +9,44 @@ import {
 } from "./countries.js";
 import { chimes } from "./chimes.js";
 
+/* Loaded on demand so a missing/broken contributions.js cannot kill About + home. */
+let contribApi = null;
+let contribApiPromise = null;
+const CONTRIB_FALLBACK = {
+  MAX_NAME_LEN: 40,
+  loadContributions: () => [],
+  addContribution: () => ({ ok: false, error: "unavailable" }),
+  contributionsGrid: (names, stageW = 0) => ({
+    gridW: Math.max(
+      16,
+      names.reduce((m, s) => Math.max(m, Array.from(s || "").length), 0),
+      stageW > 40 ? Math.floor(stageW / 12) + 1 : 0,
+      2
+    ),
+    gridH: Math.max(2, names.length),
+    writing: "horizontal",
+    cloth: "",
+    font: '"JetBrains Mono", ui-monospace, monospace'
+  })
+};
+
+function ensureContribApi() {
+  if (contribApi) return Promise.resolve(contribApi);
+  if (!contribApiPromise) {
+    contribApiPromise = import("./contributions.js?v=seed-1")
+      .then((mod) => {
+        contribApi = mod;
+        return mod;
+      })
+      .catch((err) => {
+        console.error("contributions.js failed to load", err);
+        contribApi = CONTRIB_FALLBACK;
+        return contribApi;
+      });
+  }
+  return contribApiPromise;
+}
+
 // Figma area 605:6463
 const AREA_W = 492;
 const AREA_H = 468;
@@ -267,7 +305,7 @@ const CONFIG = {
   chimeVolume: 0.28
 };
 
-const pane = new Pane({ title: "Configure" });
+const pane = new Pane({ title: "Play" });
 pane.hidden = true;
 pane.element.classList.add("budarina-pane");
 
@@ -412,17 +450,36 @@ function isAboutOpen() {
   return !!(aboutModal && !aboutModal.hidden);
 }
 
+function mountModal(el) {
+  if (el && el.parentElement !== document.body) {
+    document.body.appendChild(el);
+  }
+}
+
 function setAboutOpen(open) {
   if (!aboutModal) return;
-  if (open) {
+  const want = !!open;
+  if (want === isAboutOpen()) {
+    if (want) {
+      mountModal(aboutModal);
+      const closeBtn = document.getElementById("aboutClose");
+      (closeBtn || aboutModal).focus?.();
+    }
+    return;
+  }
+  if (want) {
+    if (isContributionsView()) window.setView?.("home");
     aboutLastFocus = document.activeElement;
+    mountModal(aboutModal);
     aboutModal.hidden = false;
+    aboutModal.removeAttribute("hidden");
     aboutModal.setAttribute("aria-hidden", "false");
     aboutBtn?.setAttribute("aria-expanded", "true");
     const closeBtn = document.getElementById("aboutClose");
     (closeBtn || aboutModal).focus?.();
   } else {
     aboutModal.hidden = true;
+    aboutModal.setAttribute("hidden", "");
     aboutModal.setAttribute("aria-hidden", "true");
     aboutBtn?.setAttribute("aria-expanded", "false");
     const restore = aboutLastFocus;
@@ -435,7 +492,9 @@ function setAboutOpen(open) {
   }
 }
 
-aboutBtn?.addEventListener("click", () => {
+aboutBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
   setAboutOpen(true);
 });
 document.getElementById("aboutClose")?.addEventListener("click", () => {
@@ -444,6 +503,148 @@ document.getElementById("aboutClose")?.addEventListener("click", () => {
 document.getElementById("aboutCloseBg")?.addEventListener("click", () => {
   setAboutOpen(false);
 });
+
+/* ─── Contributions view + hanging name cloth ─── */
+const contributionsClothHost = document.getElementById("contributionsCloth");
+const contributionsEmpty = document.getElementById("contributionsEmpty");
+const contributionsInput = document.getElementById("contributionsInput");
+const contributionsHint = document.getElementById("contributionsHint");
+let contributionsCloth = null;
+let contributionsRaf = 0;
+let contributionsResizeObs = null;
+let contributionsBuildId = 0;
+let contributionsRebuildQuiet = false;
+
+mountModal(aboutModal);
+
+function isContributionsView() {
+  return document.getElementById("stage")?.dataset.view === "contributions";
+}
+
+function setContributionsHint(msg) {
+  if (!contributionsHint) return;
+  if (!msg) {
+    contributionsHint.hidden = true;
+    contributionsHint.textContent = "";
+    return;
+  }
+  contributionsHint.hidden = false;
+  contributionsHint.textContent = msg;
+}
+
+function stopContributionsCloth() {
+  if (contributionsRaf) {
+    cancelAnimationFrame(contributionsRaf);
+    contributionsRaf = 0;
+  }
+  contributionsCloth?.destroy?.();
+  contributionsCloth = null;
+  if (contributionsClothHost) contributionsClothHost.innerHTML = "";
+}
+
+function startContributionsLoop() {
+  if (contributionsRaf) return;
+  let last = performance.now();
+  const loop = (now) => {
+    contributionsRaf = 0;
+    if (!isContributionsView() || !contributionsCloth) return;
+    const dt = Math.min(32, now - last);
+    last = now;
+    contributionsCloth.tick(dt);
+    contributionsRaf = requestAnimationFrame(loop);
+  };
+  contributionsRaf = requestAnimationFrame(loop);
+}
+
+function refreshContributionsCloth() {
+  const buildId = ++contributionsBuildId;
+  stopContributionsCloth();
+  ensureContribApi().then((api) => {
+    if (buildId !== contributionsBuildId) return;
+    if (!isContributionsView()) return;
+    const names = api.loadContributions();
+    const hasNames = names.length > 0;
+    if (contributionsEmpty) contributionsEmpty.hidden = hasNames;
+    if (!contributionsClothHost || !hasNames) return;
+
+    // Wait a frame so the stage has laid out (fill-width measurement).
+    requestAnimationFrame(() => {
+      if (buildId !== contributionsBuildId) return;
+      if (!isContributionsView()) return;
+      const stage = contributionsClothHost.parentElement;
+      const w = stage?.clientWidth || contributionsClothHost.clientWidth;
+      const h = stage?.clientHeight || contributionsClothHost.clientHeight;
+      if (w < 40 || h < 40) return;
+      contributionsRebuildQuiet = true;
+      try {
+        contributionsCloth = createContributionsCloth(
+          contributionsClothHost,
+          names,
+          w,
+          h,
+          api.contributionsGrid
+        );
+      } finally {
+        // Ignore ResizeObserver noise from swapping the canvas.
+        requestAnimationFrame(() => {
+          contributionsRebuildQuiet = false;
+        });
+      }
+      if (buildId !== contributionsBuildId) {
+        stopContributionsCloth();
+        return;
+      }
+      startContributionsLoop();
+    });
+  });
+}
+
+function enterContributionsView() {
+  if (isAboutOpen()) setAboutOpen(false);
+  setContributionsHint("");
+  refreshContributionsCloth();
+  contributionsInput?.focus?.();
+}
+
+document.getElementById("contributionsForm")?.addEventListener("submit", (e) => {
+  e.preventDefault();
+  ensureContribApi().then((api) => {
+    const result = api.addContribution(contributionsInput?.value ?? "");
+    if (!result.ok) {
+      if (result.error === "empty") {
+        setContributionsHint("Enter a country name.");
+      } else if (result.error === "too_long") {
+        setContributionsHint(`Keep it under ${api.MAX_NAME_LEN} characters.`);
+      } else if (result.error === "not_a_country") {
+        setContributionsHint("Please enter a country name.");
+      } else if (result.error === "full") {
+        setContributionsHint("The cloth is full — thank you.");
+      } else {
+        setContributionsHint("Could not add that name.");
+      }
+      contributionsInput?.focus?.();
+      return;
+    }
+    setContributionsHint("");
+    if (contributionsInput) contributionsInput.value = "";
+    refreshContributionsCloth();
+    contributionsInput?.focus?.();
+  });
+});
+
+if (contributionsClothHost && typeof ResizeObserver !== "undefined") {
+  let resizeTimer = 0;
+  contributionsResizeObs = new ResizeObserver(() => {
+    if (!isContributionsView() || contributionsRebuildQuiet) return;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (!contributionsRebuildQuiet && isContributionsView()) {
+        refreshContributionsCloth();
+      }
+    }, 120);
+  });
+  contributionsResizeObs.observe(contributionsClothHost);
+}
 
 window.addEventListener("keydown", (e) => {
   if (e.key === "`") setPaneOpen(pane.hidden);
@@ -465,6 +666,7 @@ function isPaneEvent(e) {
     e.target?.closest?.(".country-btn") ||
     e.target?.closest?.(".about") ||
     e.target?.closest?.(".about-btn") ||
+    e.target?.closest?.(".contributions") ||
     e.target?.closest?.(".aside-block")
   );
 }
@@ -902,30 +1104,50 @@ class Constraint {
   }
 }
 
-/* ─── Views: Home ↔ Destinations ─── */
+/* ─── Views: Home ↔ Destinations ↔ Contributions ─── */
 function initViews() {
   const stage = document.getElementById("stage");
   const destView = document.getElementById("destinationsView");
-  const links = document.querySelectorAll(".menu a[data-view]");
+  const contribView = document.getElementById("contributionsView");
+  const links = document.querySelectorAll("a[data-view]");
+
+  function normalizeView(view) {
+    if (view === "destinations" || view === "contributions") return view;
+    return "home";
+  }
 
   function setView(view) {
-    const next = view === "destinations" ? "destinations" : "home";
-    if (next === "home" && stage.dataset.view === "destinations") {
+    const next = normalizeView(view);
+    const prev = stage.dataset.view || "home";
+
+    if (next === "home" && prev === "destinations") {
       const centered = carousel?.centeredId?.();
       if (centered && centered !== currentCountryId) {
         setCountry(centered, { animate: false });
       }
     }
+
+    if (prev === "contributions" && next !== "contributions") {
+      stopContributionsCloth();
+    }
+
     stage.dataset.view = next;
     if (destView) destView.hidden = next !== "destinations";
+    if (contribView) contribView.hidden = next !== "contributions";
     links.forEach((a) => {
       a.classList.toggle("is-active", a.dataset.view === next);
     });
+
     if (next === "destinations") {
       if (isAboutOpen()) setAboutOpen(false);
       carousel?.syncToCountry(currentCountryId);
       carousel?.layout();
     }
+
+    if (next === "contributions") {
+      enterContributionsView();
+    }
+
     layoutAreaAboveCopy();
     const hash = next === "home" ? "#home" : `#${next}`;
     if (location.hash !== hash) {
@@ -943,8 +1165,13 @@ function initViews() {
     });
   });
 
-  const initial =
-    location.hash === "#destinations" ? "destinations" : "home";
+  const initial = normalizeView(
+    location.hash === "#destinations"
+      ? "destinations"
+      : location.hash === "#contributions"
+        ? "contributions"
+        : "home"
+  );
   setView(initial);
   window.setView = setView;
 }
@@ -970,12 +1197,15 @@ function layoutAreaAboveCopy() {
     return;
   }
 
-  // Destinations: let CSS center the carousel; clear any home pin
-  if (stage.dataset.view === "destinations") {
+  // Destinations / Contributions: let CSS own layout; clear any home pin
+  if (stage.dataset.view !== "home") {
+    area.style.bottom = "";
+    area.style.top = "";
     if (carouselVp) {
       carouselVp.style.bottom = "";
       carouselVp.style.top = "";
     }
+    return;
   }
 
   const stageRect = stage.getBoundingClientRect();
@@ -1235,6 +1465,206 @@ function createCarouselCloth(host, country) {
     containsPoint,
     setActive(v) {
       active = v;
+    }
+  };
+}
+
+/**
+ * Contributions cloth — each submitted country name is a horizontal hanging row.
+ * Stage fills modal width; letter columns stay dense (~12px). Canvas pad matches
+ * main .strings so sway isn't cropped at the edges.
+ */
+function createContributionsCloth(host, names, cssW, cssH, gridFn) {
+  if (!host || !names?.length) return null;
+
+  const width = Math.max(80, cssW);
+  const height = Math.max(80, cssH);
+  const pad = 56;
+  const canvasW = width + pad * 2;
+  const canvasH = height + pad * 2;
+  const grid = (gridFn || CONTRIB_FALLBACK.contributionsGrid)(names, width);
+  const gridW = grid.gridW;
+  const gridH = grid.gridH;
+  const cellWidth = width / Math.max(1, gridW - 1);
+  const cellHeight = height / Math.max(1, gridH - 1);
+  const fontSize = Math.max(
+    9,
+    Math.min(14, Math.min(cellWidth * 0.95, cellHeight * 0.85))
+  );
+  const originX = pad;
+  const originY = pad + Math.ceil(fontSize * 0.35);
+  const fullCode = grid.cloth;
+  const writing = grid.writing || "horizontal";
+  const font = grid.font;
+
+  const charCanvases = {};
+  for (const ch of new Set(fullCode)) {
+    if (ch === " " || ch === "　") continue;
+    const size = Math.ceil(fontSize * 1.35);
+    const off = document.createElement("canvas");
+    off.width = Math.ceil(size * dpr);
+    off.height = Math.ceil(size * dpr);
+    off._size = size;
+    const octx = off.getContext("2d");
+    octx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    octx.font = `${fontSize}px ${font}`;
+    octx.textAlign = "center";
+    octx.textBaseline = "middle";
+    octx.fillStyle = "#2a2620";
+    octx.fillText(ch, size / 2, size / 2);
+    charCanvases[ch] = off;
+  }
+
+  const particles = [];
+  const constraints = [];
+  for (let i = 0; i < gridW; i++) {
+    for (let j = 0; j < gridH; j++) {
+      const x = i * cellWidth;
+      const y = j * cellHeight;
+      const id = getPointID(j, i, gridH);
+      const pinned = j === 0;
+      const char = charForCell(fullCode, i, j, gridW, gridH, writing);
+      particles.push(new Particle({ x, y, pinned, id, char }));
+    }
+  }
+  for (let i = 0; i < gridW; i++) {
+    for (let j = 0; j < gridH; j++) {
+      const id = getPointID(j, i, gridH);
+      const p = particles[id];
+      if (j < gridH - 1) {
+        const bottomP = particles[getPointID(j + 1, i, gridH)];
+        const constraint = new Constraint({
+          p1: p,
+          p2: bottomP,
+          length: cellHeight,
+          id: id + gridW * gridH,
+          compressFactor: 0.02,
+          stretchFactor: 1.1
+        });
+        constraints.push(constraint);
+        p.downConstraint = constraint;
+      }
+      if (i < gridW - 1) {
+        const rightP = particles[getPointID(j, i + 1, gridH)];
+        constraints.push(
+          new Constraint({
+            p1: p,
+            p2: rightP,
+            length: cellWidth,
+            id: id + gridW * gridH * 2,
+            compressFactor: 0.6,
+            stretchFactor: 4,
+            isSpacer: true
+          })
+        );
+      }
+    }
+  }
+
+  for (let f = 0; f < 70; f++) {
+    particles.forEach((p) => p.update(16));
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < constraints.length; j++) constraints[j].solve();
+    }
+  }
+
+  const canvas = document.createElement("canvas");
+  sizeCanvas(canvas, canvasW, canvasH);
+  const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  host.innerHTML = "";
+  host.appendChild(canvas);
+
+  const mousePos = new Vec2();
+  let destroyed = false;
+
+  function draw() {
+    if (destroyed) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, canvasW, canvasH);
+    particles.forEach((p) => {
+      if (!p.char || p.char === " " || p.char === "　") return;
+      const img = charCanvases[p.char];
+      if (!img) return;
+      let cos = 1;
+      let sin = 0;
+      const constraint = p.downConstraint;
+      if (constraint) {
+        const dx = constraint.p2.pos.x - constraint.p1.pos.x;
+        const dy = constraint.p2.pos.y - constraint.p1.pos.y;
+        const angle = Math.atan2(dy, dx) - Math.PI / 2;
+        cos = Math.cos(angle);
+        sin = Math.sin(angle);
+      }
+      const size = img._size;
+      const half = size / 2;
+      const x = p.pos.x + originX;
+      const y = p.pos.y + originY;
+      ctx.setTransform(
+        cos * dpr,
+        sin * dpr,
+        -sin * dpr,
+        cos * dpr,
+        x * dpr,
+        y * dpr
+      );
+      ctx.drawImage(img, -half, -half, size, size);
+    });
+  }
+
+  function tick(dt) {
+    if (destroyed) return;
+    particles.forEach((p) => p.update(dt));
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < constraints.length; j++) constraints[j].solve();
+    }
+    draw();
+  }
+
+  function localPoint(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width < 1 || rect.height < 1) return null;
+    return {
+      x: ((clientX - rect.left) / rect.width) * canvasW - originX,
+      y: ((clientY - rect.top) / rect.height) * canvasH - originY
+    };
+  }
+
+  function brush(clientX, clientY) {
+    if (destroyed) return;
+    const pt = localPoint(clientX, clientY);
+    if (!pt) return;
+    mousePos.reset(pt.x, pt.y);
+    for (const p of particles) {
+      const diff = mousePos.subtractNew(p.pos);
+      const ls = diff.lengthSquared;
+      if (ls < CONFIG.mouseSize) {
+        const a = diff.angle - Math.PI;
+        const strength =
+          (smoothstep(CONFIG.mouseSize, -2000, ls) * CONFIG.mouseStrength) /
+          300;
+        p.applyForce(new Vec2(Math.cos(a) * strength, Math.sin(a) * strength));
+      }
+    }
+  }
+
+  function onPointerMove(e) {
+    brush(e.clientX, e.clientY);
+  }
+
+  canvas.addEventListener("pointermove", onPointerMove);
+
+  draw();
+
+  return {
+    canvas,
+    tick,
+    brush,
+    destroy() {
+      destroyed = true;
+      canvas.removeEventListener("pointermove", onPointerMove);
+      host.innerHTML = "";
     }
   };
 }
